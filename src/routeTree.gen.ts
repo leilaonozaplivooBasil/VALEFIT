@@ -25,6 +25,7 @@ import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as RecapRouteImport } from './routes/recap'
 import { Route as RelatorioRouteImport } from './routes/relatorio'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TermosRouteImport } from './routes/termos'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiInterpretMealRouteImport } from './routes/api/interpret-meal'
 import { Route as ApiWeeklyReportRouteImport } from './routes/api/weekly-report'
@@ -113,6 +114,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermosRoute = TermosRouteImport.update({
+  id: '/termos',
+  path: '/termos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
@@ -175,6 +181,7 @@ export interface FileRoutesByFullPath {
   '/recap': typeof RecapRoute
   '/relatorio': typeof RelatorioRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/termos': typeof TermosRoute
   '/api/chat': typeof ApiChatRoute
   '/api/interpret-meal': typeof ApiInterpretMealRoute
   '/api/weekly-report': typeof ApiWeeklyReportRoute
@@ -200,6 +207,7 @@ export interface FileRoutesByTo {
   '/recap': typeof RecapRoute
   '/relatorio': typeof RelatorioRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/termos': typeof TermosRoute
   '/api/chat': typeof ApiChatRoute
   '/api/interpret-meal': typeof ApiInterpretMealRoute
   '/api/weekly-report': typeof ApiWeeklyReportRoute
@@ -227,6 +235,7 @@ export interface FileRoutesById {
   '/recap': typeof RecapRoute
   '/relatorio': typeof RelatorioRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/termos': typeof TermosRoute
   '/api/chat': typeof ApiChatRoute
   '/api/interpret-meal': typeof ApiInterpretMealRoute
   '/api/weekly-report': typeof ApiWeeklyReportRoute
@@ -254,6 +263,7 @@ export interface FileRouteTypes {
     | '/recap'
     | '/relatorio'
     | '/sitemap.xml'
+    | '/termos'
     | '/api/chat'
     | '/api/interpret-meal'
     | '/api/weekly-report'
@@ -279,6 +289,7 @@ export interface FileRouteTypes {
     | '/recap'
     | '/relatorio'
     | '/sitemap.xml'
+    | '/termos'
     | '/api/chat'
     | '/api/interpret-meal'
     | '/api/weekly-report'
@@ -305,6 +316,7 @@ export interface FileRouteTypes {
     | '/recap'
     | '/relatorio'
     | '/sitemap.xml'
+    | '/termos'
     | '/api/chat'
     | '/api/interpret-meal'
     | '/api/weekly-report'
@@ -332,6 +344,7 @@ export interface RootRouteChildren {
   RecapRoute: typeof RecapRoute
   RelatorioRoute: typeof RelatorioRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermosRoute: typeof TermosRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiInterpretMealRoute: typeof ApiInterpretMealRoute
   ApiWeeklyReportRoute: typeof ApiWeeklyReportRoute
@@ -451,6 +464,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/termos': {
+      id: '/termos'
+      path: '/termos'
+      fullPath: '/termos'
+      preLoaderRoute: typeof TermosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/chat': {
       id: '/api/chat'
       path: '/api/chat'
@@ -550,6 +570,7 @@ const rootRouteChildren: RootRouteChildren = {
   RecapRoute: RecapRoute,
   RelatorioRoute: RelatorioRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermosRoute: TermosRoute,
   ApiChatRoute: ApiChatRoute,
   ApiInterpretMealRoute: ApiInterpretMealRoute,
   ApiWeeklyReportRoute: ApiWeeklyReportRoute,
