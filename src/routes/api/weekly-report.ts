@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { streamText } from "ai";
-import { createLovableAiGatewayProvider, DEFAULT_MODEL } from "@/lib/ai-gateway.server";
+import { getAiModel } from "@/lib/ai-gateway.server";
 
 interface Body {
   profile?: unknown;
@@ -38,11 +38,10 @@ export const Route = createFileRoute("/api/weekly-report")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const key = process.env.LOVABLE_API_KEY;
-        if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+        const model = getAiModel();
+        if (!model) return new Response("Missing AI_API_KEY", { status: 500 });
 
         const body = (await request.json().catch(() => ({}))) as Body;
-        const gateway = createLovableAiGatewayProvider(key);
 
         const context = [
           body.profile ? `Perfil: ${JSON.stringify(body.profile)}` : "",
@@ -56,7 +55,7 @@ export const Route = createFileRoute("/api/weekly-report")({
           .join("\n");
 
         const result = streamText({
-          model: gateway(DEFAULT_MODEL),
+          model,
           system: body.mode === "decision" ? DECISION_SYSTEM : WEEKLY_SYSTEM,
           messages: [{ role: "user", content: context || "Sem dados suficientes." }],
           temperature: 0.5,

@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, useSearch, Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
 import { Loader2, ArrowLeft, ShieldCheck } from "lucide-react";
 import { definirPerfil, meuPerfil, vincularPorSlug } from "@/lib/perfil.functions";
 import { profissionalPorSlug } from "@/lib/publico.functions";
 
 type Tipo = "consumidor" | "nutricionista" | "personal" | "academia";
+type OAuthPendente = { tipo: Tipo; convite?: string };
+const OAUTH_PENDENTE = "nutri-ia:oauth-pendente";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -41,9 +42,9 @@ export function destinoPorTipo(tipo: string | undefined) {
 
 function AuthPage() {
   const navigate = useNavigate();
-  const { convite, perfil: perfilInicial } = useSearch({ from: "/auth" });
+  const { convite: conviteAtual, perfil: perfilInicial } = useSearch({ from: "/auth" });
   const [modo, setModo] = useState<"entrar" | "criar">("criar");
-  const [tipo, setTipo] = useState<Tipo>(
+  const [tipoEscolhido, setTipo] = useState<Tipo>(
     perfilInicial === "nutricionista" || perfilInicial === "personal" || perfilInicial === "academia"
       ? (perfilInicial as Tipo)
       : "consumidor",
@@ -56,13 +57,15 @@ function AuthPage() {
   const [convidadoPor, setConvidadoPor] = useState<{ nome: string; tipo: string } | null>(null);
 
   useEffect(() => {
-    if (!convite) return;
-    void profissionalPorSlug({ data: { slug: convite } }).then((p) => {
+    if (!conviteAtual) return;
+    void profissionalPorSlug({ data: { slug: conviteAtual } }).then((p) => {
       if (p) setConvidadoPor({ nome: p.nome, tipo: p.tipo });
     });
-  }, [convite]);
+  }, [conviteAtual]);
 
-  async function aposSessao() {
+  async function aposSessao(pendente?: OAuthPendente) {
+    const tipo = pendente?.tipo ?? tipoEscolhido;
+    const convite = pendente ? pendente.convite : conviteAtual;
     const info = await meuPerfil();
     let destinoTipo = info.perfil?.tipo_perfil as string | undefined;
 
@@ -87,7 +90,7 @@ function AuthPage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (modo === "criar" && convite && !aceite) {
+    if (modo === "criar" && conviteAtual && !aceite) {
       toast.error("Confirme o compartilhamento de dados com o profissional.");
       return;
     }
@@ -99,7 +102,7 @@ function AuthPage() {
           password: senha,
           options: {
             emailRedirectTo: window.location.origin + "/auth",
-            data: { nome, tipo_perfil: tipo },
+            data: { nome, tipo_perfil: tipoEscolhido },
           },
         });
         if (error) throw error;
@@ -123,16 +126,23 @@ function AuthPage() {
   async function onGoogle() {
     setLoading(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin + "/auth",
-      });
-      if (result.error) {
-        toast.error("Não foi possível entrar com Google.");
-        return;
+      // O Google redireciona de volta para /auth; guardamos as escolhas da tela para concluir o cadastro.
+      const pendente: OAuthPendente = { tipo: tipoEscolhido, convite: conviteAtual };
+      try {
+        sessionStorage.setItem(OAUTH_PENDENTE, JSON.stringify(pendente));
+      } catch {
+        /* sem sessionStorage: segue com o tipo padrão */
       }
-      if (result.redirected) return;
-      await aposSessao();
-    } finally {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: window.location.origin + "/auth" },
+      });
+      if (error) {
+        toast.error("Não foi possível entrar com Google.");
+        setLoading(false);
+      }
+    } catch {
+      toast.error("Não foi possível entrar com Google.");
       setLoading(false);
     }
   }
@@ -140,6 +150,22 @@ function AuthPage() {
   useEffect(() => {
     void supabase.auth.getSession().then(({ data }) => {
       if (!data.session) return;
+      let pendente: OAuthPendente | undefined;
+      try {
+        const bruto = sessionStorage.getItem(OAUTH_PENDENTE);
+        if (bruto) pendente = JSON.parse(bruto) as OAuthPendente;
+        sessionStorage.removeItem(OAUTH_PENDENTE);
+      } catch {
+        pendente = undefined;
+      }
+      // Volta do login com Google: conclui o cadastro com as escolhas feitas antes do redirecionamento.
+      if (pendente) {
+        setLoading(true);
+        void aposSessao(pendente)
+          .catch(() => toast.error("Não foi possível concluir o login com Google."))
+          .finally(() => setLoading(false));
+        return;
+      }
       void meuPerfil().then((info) => {
         if (info.perfil && (info.consumidor || info.profissional || info.academia)) {
           void navigate({ to: destinoPorTipo(info.perfil.tipo_perfil) as string });
@@ -189,7 +215,7 @@ function AuthPage() {
                 type="button"
                 onClick={() => setTipo(p.id)}
                 className={`rounded-2xl border p-3 text-left transition ${
-                  tipo === p.id ? "border-primary bg-primary-soft" : "border-border bg-card hover:border-primary/40"
+                  tipoEscolhido === p.id ? "border-primary bg-primary-soft" : "border-border bg-card hover:border-primary/40"
                 }`}
               >
                 <p className="text-sm font-bold">{p.label}</p>
@@ -227,7 +253,7 @@ function AuthPage() {
             className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
           />
 
-          {modo === "criar" && convite && (
+          {modo === "criar" && conviteAtual && (
             <label className="flex items-start gap-2 rounded-xl border border-border bg-card p-3 text-xs text-muted">
               <input
                 type="checkbox"

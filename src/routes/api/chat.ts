@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { streamText } from "ai";
-import { createLovableAiGatewayProvider, DEFAULT_MODEL } from "@/lib/ai-gateway.server";
+import { getAiModel } from "@/lib/ai-gateway.server";
 
 interface ChatMessage { role: "user" | "assistant"; content: string }
 
@@ -36,15 +36,13 @@ export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const key = process.env.LOVABLE_API_KEY;
-        if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+        const model = getAiModel();
+        if (!model) return new Response("Missing AI_API_KEY", { status: 500 });
 
         const body = (await request.json().catch(() => ({}))) as Body;
         const messages = Array.isArray(body.messages) ? body.messages : [];
         if (!messages.length) return new Response("messages é obrigatório", { status: 400 });
 
-        const gateway = createLovableAiGatewayProvider(key);
-        const model = gateway(DEFAULT_MODEL);
 
         const result = streamText({
           model,

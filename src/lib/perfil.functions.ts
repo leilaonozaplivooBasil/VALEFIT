@@ -454,8 +454,9 @@ export const gerarSugestoes = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
-    const key = process.env["LOVABLE_API_KEY"];
-    if (!key) throw new Error("IA indisponível: chave não configurada.");
+    const { getAiModel } = await import("@/lib/ai-gateway.server");
+    const model = getAiModel();
+    if (!model) throw new Error("IA indisponível: chave não configurada.");
 
     const [{ data: config }, { data: vinculos }] = await Promise.all([
       supabase
@@ -520,14 +521,14 @@ Tom de voz: ${config?.tom_de_voz || "acolhedor"}.
 Regras: português do Brasil, no máximo 45 palavras por mensagem, primeira pessoa, sem emojis em excesso (máx 1), sem diagnóstico clínico, sem prometer resultado.
 Responda APENAS um array JSON: [{"id":"<id>","texto":"<mensagem>"}]`;
 
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Lovable-API-Key": key },
-      body: JSON.stringify({
-        model: "google/gemini-3.6-flash",
+    const { generateText } = await import("ai");
+    let bruto = "[]";
+    try {
+      const { text } = await generateText({
+        model,
         temperature: 0.6,
+        system: sistema,
         messages: [
-          { role: "system", content: sistema },
           {
             role: "user",
             content: gatilhos
@@ -535,11 +536,11 @@ Responda APENAS um array JSON: [{"id":"<id>","texto":"<mensagem>"}]`;
               .join("\n"),
           },
         ],
-      }),
-    });
-    if (!resp.ok) throw new Error(`Falha na IA (${resp.status}).`);
-    const json = (await resp.json()) as { choices?: { message?: { content?: string } }[] };
-    const bruto = json.choices?.[0]?.message?.content ?? "[]";
+      });
+      bruto = text;
+    } catch (err) {
+      throw new Error(`Falha na IA (${(err as { statusCode?: number })?.statusCode ?? "erro"}).`);
+    }
     const match = bruto.match(/\[[\s\S]*\]/);
     let textos: { id: string; texto: string }[] = [];
     try {

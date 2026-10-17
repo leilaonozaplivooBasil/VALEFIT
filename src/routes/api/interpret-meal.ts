@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { generateText } from "ai";
-import { createLovableAiGatewayProvider, DEFAULT_MODEL } from "@/lib/ai-gateway.server";
+import { getAiModel } from "@/lib/ai-gateway.server";
 
 // Interpretação de refeição: recebe texto livre em português, retorna JSON estruturado.
 // Não usamos Output.object porque prompts curtos + JSON simples respondem melhor
@@ -30,16 +30,14 @@ export const Route = createFileRoute("/api/interpret-meal")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const key = process.env.LOVABLE_API_KEY;
-        if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+        const model = getAiModel();
+        if (!model) return new Response("Missing AI_API_KEY", { status: 500 });
 
         const body = (await request.json().catch(() => ({}))) as Body;
         const text = body.text?.trim();
         const image = body.image?.trim();
         if (!text && !image) return new Response("text ou image é obrigatório", { status: 400 });
 
-        const gateway = createLovableAiGatewayProvider(key);
-        const model = gateway(DEFAULT_MODEL);
 
         const prompt = [
           body.category ? `Categoria sugerida pelo horário: ${body.category}.` : "",
