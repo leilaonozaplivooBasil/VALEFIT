@@ -8,9 +8,9 @@ import { loadProfile } from "@/lib/profile";
 export const Route = createFileRoute("/log")({
   head: () => ({
     meta: [
-      { title: "Registrar refeição — Nutri IA" },
+      { title: "Registrar refeição — ValeFit" },
       { name: "description", content: "Descreva o que comeu em uma frase. A IA interpreta, estima calorias e macros automaticamente." },
-      { property: "og:title", content: "Registro por IA — Nutri IA" },
+      { property: "og:title", content: "Registro por IA — ValeFit" },
       { property: "og:description", content: "Refeição registrada em 15 segundos." },
       { property: "og:type", content: "website" },
     ],
@@ -342,7 +342,7 @@ function LogMeal() {
               </button>
               <button
                 onClick={confirm}
-                className="flex flex-[2] items-center justify-center gap-2 rounded-2xl bg-primary py-4 text-sm font-semibold text-primary-foreground hover:opacity-90"
+                className="btn-3d flex flex-[2] items-center justify-center gap-2 rounded-2xl bg-primary py-4 text-sm font-extrabold text-primary-foreground"
               >
                 <Check className="size-4" /> Adicionar ao meu dia
               </button>

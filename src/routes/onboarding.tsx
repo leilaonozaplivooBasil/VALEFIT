@@ -3,13 +3,14 @@ import { useState } from "react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import type { Activity, Goal, Intensity, Profile, Sex } from "@/lib/profile";
 import { saveProfile } from "@/lib/profile";
+import { Cuca } from "@/components/brand";
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
-      { title: "Comece agora — Nutri IA" },
+      { title: "Comece agora — ValeFit" },
       { name: "description", content: "Configure seu perfil em 60 segundos e receba metas personalizadas de calorias, macros e água calculadas por IA." },
-      { property: "og:title", content: "Onboarding — Nutri IA" },
+      { property: "og:title", content: "Onboarding — ValeFit" },
       { property: "og:description", content: "Metas personalizadas em 60 segundos." },
       { property: "og:type", content: "website" },
     ],
@@ -46,24 +47,33 @@ function StepHeader({ step, total, title, subtitle, onBack }: { step: number; to
         <button
           onClick={onBack}
           disabled={!onBack}
+          aria-label="Voltar"
           className="grid size-9 place-items-center rounded-full border border-border bg-card text-muted transition hover:text-foreground disabled:opacity-30"
         >
           <ArrowLeft className="size-4" />
         </button>
         <div className="flex-1">
-          <div className="h-1 w-full overflow-hidden rounded-full bg-secondary">
+          <div className="h-3.5 w-full overflow-hidden rounded-full bg-secondary">
             <div
-              className="h-full rounded-full bg-foreground transition-all duration-500"
+              className="relative h-full rounded-full bg-brand-leaf transition-all duration-500"
               style={{ width: `${(step / total) * 100}%` }}
-            />
+            >
+              <span className="absolute inset-x-2 top-[3px] h-1 rounded-full bg-white/35" />
+            </div>
           </div>
         </div>
-        <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
+        <span className="text-xs font-extrabold tabular-nums text-muted">
           {step}/{total}
         </span>
       </div>
-      <h1 className="text-3xl font-extrabold tracking-tight text-balance">{title}</h1>
-      {subtitle ? <p className="mt-2 text-sm text-muted">{subtitle}</p> : null}
+      <div className="flex items-end gap-3">
+        <Cuca pose="rosto" decorative className="w-20 shrink-0 animate-pop sm:w-24" key={step} />
+        <div className="relative mb-3 flex-1 rounded-2xl border-2 border-border bg-card px-4 py-3">
+          <h1 className="text-xl font-black tracking-tight text-balance sm:text-2xl">{title}</h1>
+          <span aria-hidden="true" className="absolute -left-[9px] bottom-4 size-4 rotate-45 border-b-2 border-l-2 border-border bg-card" />
+        </div>
+      </div>
+      {subtitle ? <p className="mt-3 text-sm text-muted">{subtitle}</p> : null}
     </div>
   );
 }
@@ -73,7 +83,7 @@ function ContinueButton({ disabled, onClick, label = "Continuar" }: { disabled?:
     <button
       onClick={onClick}
       disabled={disabled}
-      className="mt-auto flex w-full items-center justify-center gap-2 rounded-2xl bg-foreground px-6 py-4 text-base font-semibold text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+      className="btn-3d mt-auto flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 text-base font-extrabold uppercase tracking-wide text-white disabled:cursor-not-allowed disabled:bg-secondary disabled:text-muted disabled:shadow-none"
     >
       {label} <ArrowRight className="size-4" />
     </button>
@@ -84,7 +94,7 @@ function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
       {...props}
-      className={`w-full rounded-2xl border border-border bg-card px-5 py-4 text-base outline-none transition focus:border-foreground ${props.className ?? ""}`}
+      className={`w-full rounded-2xl border-2 border-border bg-card px-5 py-4 text-base font-semibold outline-none transition focus:border-primary ${props.className ?? ""}`}
     />
   );
 }
@@ -93,10 +103,10 @@ function ChoicePill({ selected, onClick, children }: { selected: boolean; onClic
   return (
     <button
       onClick={onClick}
-      className={`rounded-xl border px-4 py-3 text-sm font-semibold transition ${
+      className={`btn-3d-soft rounded-xl border-2 px-4 py-3 text-sm font-bold transition ${
         selected
-          ? "border-foreground bg-foreground text-background"
-          : "border-border bg-card text-foreground hover:border-foreground/40"
+          ? "border-primary bg-primary-soft text-primary"
+          : "border-border bg-card text-foreground hover:border-primary/40"
       }`}
     >
       {children}
@@ -108,15 +118,15 @@ function ChoiceCard({ selected, onClick, title, subtitle }: { selected: boolean;
   return (
     <button
       onClick={onClick}
-      className={`flex w-full items-center justify-between rounded-2xl border p-4 text-left transition ${
-        selected ? "border-foreground bg-foreground/[0.03]" : "border-border bg-card hover:border-foreground/30"
+      className={`btn-3d-soft flex w-full items-center justify-between rounded-2xl border-2 p-4 text-left transition ${
+        selected ? "border-primary bg-primary-soft" : "border-border bg-card hover:border-primary/40"
       }`}
     >
       <div>
-        <p className="font-bold">{title}</p>
+        <p className={`font-extrabold ${selected ? "text-primary" : ""}`}>{title}</p>
         {subtitle ? <p className="mt-0.5 text-xs text-muted">{subtitle}</p> : null}
       </div>
-      <div className={`grid size-6 place-items-center rounded-full border-2 ${selected ? "border-foreground bg-foreground text-background" : "border-border"}`}>
+      <div className={`grid size-6 place-items-center rounded-full border-2 ${selected ? "border-primary bg-primary text-white" : "border-border"}`}>
         {selected ? <Check className="size-3.5" strokeWidth={3} /> : null}
       </div>
     </button>
@@ -170,7 +180,7 @@ function Onboarding() {
       <div className="mx-auto flex min-h-screen max-w-xl flex-col px-6 py-8">
         {step === 0 && (
           <>
-            <StepHeader step={1} total={totalSteps} title="Como você se chama?" subtitle="Vamos personalizar sua jornada." onBack={back} />
+            <StepHeader step={1} total={totalSteps} title="Oi! Eu sou o Cuca. Como você se chama?" subtitle="Vamos personalizar sua jornada." onBack={back} />
             <TextInput autoFocus placeholder="Seu primeiro nome" value={d.name} onChange={(e) => set("name", e.target.value)} />
             <ContinueButton disabled={!d.name.trim()} onClick={() => setStep(1)} />
           </>
@@ -310,7 +320,8 @@ function Onboarding() {
         {step === 7 && (
           <>
             <StepHeader step={totalSteps} total={totalSteps} title={`Tudo pronto, ${d.name.split(" ")[0]}.`} subtitle="Calculamos suas metas com base em Mifflin-St Jeor e seu perfil." onBack={back} />
-            <div className="rounded-3xl border border-border bg-card p-6">
+            <div className="card-soft rounded-3xl p-6 text-center">
+              <Cuca pose="joia" className="animate-cuca mx-auto -mt-2 mb-3 w-44" />
               <p className="text-sm text-muted">
                 Seus valores personalizados já estão prontos. No dashboard você verá seu
                 anel de calorias, macros, hidratação, peso e a estimativa de tempo para

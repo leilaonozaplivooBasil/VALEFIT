@@ -44,7 +44,7 @@ export function ConsistencyRing({
         />
       </svg>
       <div className="absolute text-center">
-        <p className="text-4xl font-extrabold tabular-nums tracking-tighter">{score}</p>
+        <p className="text-4xl font-black tabular-nums tracking-tighter text-brand-deep">{score}</p>
         {!compact && (
           <>
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted">de 100</p>
@@ -58,14 +58,14 @@ export function ConsistencyRing({
 
 export function ConsistencyCard({ score, className = "" }: { score: DayScore; className?: string }) {
   return (
-    <section className={`rounded-[32px] border border-border bg-card p-6 shadow-sm ${className}`}>
+    <section className={`card-soft rounded-[28px] p-6 ${className}`}>
       <div className="flex items-center justify-between">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-widest text-muted">Índice de Consistência</p>
-          <h2 className="mt-1 text-lg font-bold tracking-tight">Como está seu dia</h2>
+          <h2 className="text-xl font-extrabold tracking-tight">Como está seu dia</h2>
+          <p className="mt-0.5 text-sm text-muted">Acompanhe sua evolução e mantenha o foco.</p>
         </div>
-        <span className="rounded-full bg-primary-soft px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-primary">
-          proprietário
+        <span className="shrink-0 rounded-full bg-primary-soft px-3 py-1.5 text-xs font-bold text-primary">
+          Índice de consistência
         </span>
       </div>
 
@@ -75,12 +75,12 @@ export function ConsistencyCard({ score, className = "" }: { score: DayScore; cl
           {score.parts.map((p) => (
             <div key={p.key}>
               <div className="flex items-baseline justify-between text-xs">
-                <span className="font-semibold">{p.label}</span>
+                <span className="font-bold">{p.label}</span>
                 <span className="tabular-nums text-muted">
                   {p.pct}% <span className="text-[10px]">· {p.detail}</span>
                 </span>
               </div>
-              <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-secondary">
+              <div className="mt-1 h-2 overflow-hidden rounded-full bg-secondary">
                 <div
                   className="h-full rounded-full transition-all duration-700"
                   style={{ width: `${p.pct}%`, background: COLORS[p.key] }}

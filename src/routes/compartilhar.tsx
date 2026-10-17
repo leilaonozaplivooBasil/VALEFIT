@@ -12,9 +12,9 @@ import { downloadCard, shareCard, type CardData } from "@/lib/share-card";
 export const Route = createFileRoute("/compartilhar")({
   head: () => ({
     meta: [
-      { title: "Compartilhar progresso — Nutri IA" },
+      { title: "Compartilhar progresso — ValeFit" },
       { name: "description", content: "Gere cards de progresso prontos para stories: Índice de Consistência, sequência de dias, evolução de peso e conquistas." },
-      { property: "og:title", content: "Compartilhar progresso — Nutri IA" },
+      { property: "og:title", content: "Compartilhar progresso — ValeFit" },
       { property: "og:description", content: "Cards de progresso gerados automaticamente pela sua evolução." },
       { property: "og:type", content: "website" },
     ],
@@ -31,7 +31,7 @@ function CardPreview({ data }: { data: CardData }) {
         className="pointer-events-none absolute -right-16 -top-16 size-64 rounded-full blur-3xl"
         style={{ background: `${data.accent}55` }}
       />
-      <p className="relative font-mono text-[10px] uppercase tracking-widest opacity-60">Nutri IA</p>
+      <p className="relative font-mono text-[10px] uppercase tracking-widest opacity-60">ValeFit</p>
       <p className="relative mt-6 font-mono text-[10px] font-bold uppercase tracking-widest" style={{ color: data.accent }}>
         {data.eyebrow}
       </p>
@@ -193,7 +193,7 @@ function CompartilharPage() {
             Baixar PNG
           </button>
           <button
-            onClick={() => void shareCard(card, `${card.eyebrow}: ${card.headline}${card.unit ?? ""} — Nutri IA`)}
+            onClick={() => void shareCard(card, `${card.eyebrow}: ${card.headline}${card.unit ?? ""} — ValeFit`)}
             className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-foreground py-4 text-sm font-semibold text-background"
           >
             <Share2 className="size-4" />

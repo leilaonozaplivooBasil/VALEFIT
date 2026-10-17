@@ -7,9 +7,9 @@ import { calcTargets, clearProfile, loadProfile, type Profile } from "@/lib/prof
 export const Route = createFileRoute("/perfil")({
   head: () => ({
     meta: [
-      { title: "Perfil — Nutri IA" },
-      { name: "description", content: "Seu perfil, metas calculadas por IA e configurações do Nutri IA." },
-      { property: "og:title", content: "Perfil — Nutri IA" },
+      { title: "Perfil — ValeFit" },
+      { name: "description", content: "Seu perfil, metas calculadas por IA e configurações do ValeFit." },
+      { property: "og:title", content: "Perfil — ValeFit" },
       { property: "og:description", content: "Suas metas nutricionais personalizadas." },
       { property: "og:type", content: "website" },
     ],

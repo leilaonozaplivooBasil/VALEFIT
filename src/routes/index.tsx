@@ -4,17 +4,18 @@ import { Salad, Stethoscope, ArrowRight } from "lucide-react";
 import { loadProfile } from "@/lib/profile";
 import { meuPerfil } from "@/lib/perfil.functions";
 import { destinoPorTipo } from "./auth";
+import { Cuca, Logo, Squiggle } from "@/components/brand";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Nutri IA — sua nutricionista com IA, 24h por dia" },
+      { title: "ValeFit — nutrição com IA e o Cuca do seu lado" },
       {
         name: "description",
         content:
           "Registre refeições em 15 segundos, receba metas personalizadas e converse com uma IA que conhece seu histórico, hábitos e objetivos.",
       },
-      { property: "og:title", content: "Nutri IA — nutricionista com IA, 24h" },
+      { property: "og:title", content: "ValeFit — nutricionista com IA, 24h" },
       { property: "og:description", content: "Acompanhamento nutricional inteligente por IA. Emagreça, ganhe massa ou mantenha o peso." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -61,83 +62,82 @@ function Welcome() {
   if (verificando)
     return (
       <div className="grid min-h-screen place-items-center bg-background">
-        <p className="text-shimmer text-sm font-semibold">Carregando…</p>
+        <div className="text-center">
+          <Cuca pose="rosto" decorative className="animate-cuca mx-auto w-24" />
+          <p className="text-shimmer mt-3 text-sm font-bold">Carregando…</p>
+        </div>
       </div>
     );
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="mx-auto flex min-h-screen max-w-xl flex-col px-6 py-10">
-        <header className="flex items-center gap-2 animate-reveal">
-          <div className="grid size-9 place-items-center rounded-lg bg-primary">
-            <div className="size-2.5 rounded-full bg-white" />
-          </div>
-          <span className="text-xl font-extrabold tracking-tight">Nutri IA</span>
+      <div className="mx-auto flex min-h-screen max-w-xl flex-col px-6 py-8">
+        <header className="flex items-center justify-between animate-reveal">
+          <Logo className="text-primary" />
+          <Link to="/auth" search={{ modo: "entrar" }} className="text-sm font-extrabold text-primary">
+            Entrar
+          </Link>
         </header>
 
-        <section className="mt-16 animate-reveal [animation-delay:100ms]">
-          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
-            Bem-vindo
-          </p>
-          <h1 className="mt-3 text-balance text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Nutrição inteligente,
-            <br />
-            <span className="text-primary">sem esforço.</span>
-          </h1>
-          <p className="mt-5 max-w-md text-pretty text-base leading-relaxed text-muted">
-            Registre refeições por texto, voz ou foto. A IA calcula calorias, macros
-            e acompanha sua evolução — como uma nutricionista disponível 24 horas.
-          </p>
+        <section className="mt-8 text-center animate-reveal [animation-delay:100ms]">
+          <div className="relative mx-auto w-fit">
+            <div className="absolute inset-x-6 bottom-0 top-10 rounded-full bg-brand-lime/50 blur-2xl" />
+            <Cuca pose="joia" className="animate-cuca relative w-64 sm:w-72" />
+          </div>
+          <div className="relative -mt-2 rounded-[28px] bg-brand-deep px-6 pb-7 pt-6 text-white">
+            <p className="text-sm font-bold text-brand-lime">Oi! Eu sou o Cuca 🐊</p>
+            <h1 className="mt-2 text-balance text-3xl font-black leading-tight sm:text-4xl">
+              Pequenos hábitos hoje, grandes resultados amanhã.
+            </h1>
+            <p className="mx-auto mt-3 max-w-sm text-pretty text-[15px] leading-relaxed text-white/80">
+              Registre refeições por texto, voz ou foto. Eu calculo calorias e macros, te dou missões diárias
+              e acompanho sua evolução, como uma nutricionista no seu bolso.
+            </p>
+          </div>
         </section>
 
-        <section className="mt-14 flex-1 animate-reveal [animation-delay:200ms]">
-          <p className="mb-4 text-sm font-semibold text-foreground">Quem é você?</p>
+        <section className="mt-8 flex-1 animate-reveal [animation-delay:200ms]">
+          <p className="mb-3 text-center text-sm font-extrabold text-foreground">Quem é você?</p>
           <div className="space-y-3">
             <Link
               to="/onboarding"
-              className="group flex items-center gap-4 rounded-3xl border border-border bg-card p-5 transition hover:border-primary hover:shadow-lg"
+              className="btn-3d group flex items-center gap-4 rounded-[22px] bg-primary p-5 text-white"
             >
-              <div className="grid size-14 place-items-center rounded-2xl bg-primary-soft text-primary">
-                <Salad className="size-6" strokeWidth={2} />
+              <div className="grid size-12 shrink-0 place-items-center rounded-2xl bg-white/15">
+                <Salad className="size-6" strokeWidth={2.25} />
               </div>
               <div className="flex-1">
-                <h3 className="font-bold">Quero acompanhar minha alimentação</h3>
-                <p className="mt-0.5 text-sm text-muted">
-                  Metas automáticas, registro por IA e evolução visual.
-                </p>
+                <h3 className="font-extrabold">Quero acompanhar minha alimentação</h3>
+                <p className="mt-0.5 text-sm text-white/80">Metas automáticas, registro por IA e missões diárias.</p>
               </div>
-              <ArrowRight className="size-5 text-muted transition group-hover:translate-x-1 group-hover:text-primary" />
+              <ArrowRight className="size-5 transition group-hover:translate-x-1" />
             </Link>
 
             <Link
               to="/nutricionista"
-              className="group flex items-center gap-4 rounded-3xl border border-border bg-card p-5 transition hover:border-foreground hover:shadow-lg"
+              className="card-soft btn-3d-soft group flex items-center gap-4 rounded-[22px] p-5"
             >
-              <div className="grid size-14 place-items-center rounded-2xl bg-secondary text-foreground">
-                <Stethoscope className="size-6" strokeWidth={2} />
+              <div className="grid size-12 shrink-0 place-items-center rounded-2xl bg-brand-lime/60 text-brand-deep">
+                <Stethoscope className="size-6" strokeWidth={2.25} />
               </div>
               <div className="flex-1">
-                <h3 className="font-bold">Sou nutricionista</h3>
-                <p className="mt-0.5 text-sm text-muted">
-                  Gestão de pacientes, dietas e IA personalizada (em breve).
-                </p>
+                <h3 className="font-extrabold">Sou nutricionista</h3>
+                <p className="mt-0.5 text-sm text-muted">Gestão de pacientes, dietas e IA personalizada.</p>
               </div>
-              <ArrowRight className="size-5 text-muted transition group-hover:translate-x-1" />
+              <ArrowRight className="size-5 text-muted transition group-hover:translate-x-1 group-hover:text-primary" />
             </Link>
           </div>
         </section>
 
         <p className="mt-8 text-center text-sm text-muted animate-reveal [animation-delay:250ms]">
           Já tem conta?{" "}
-          <Link to="/auth" search={{ modo: "entrar" }} className="font-semibold text-foreground underline">
+          <Link to="/auth" search={{ modo: "entrar" }} className="font-extrabold text-primary underline-offset-2 hover:underline">
             Entrar
           </Link>
         </p>
 
-        <footer className="mt-10 flex items-center justify-between text-xs text-muted animate-reveal [animation-delay:300ms]">
-          <span className="font-mono uppercase tracking-widest">
-            v1 · Precision Health
-          </span>
+        <footer className="mt-8 flex items-center justify-between text-xs text-muted animate-reveal [animation-delay:300ms]">
+          <Squiggle className="w-10 text-brand-leaf" />
           <span className="flex gap-3">
             <Link to="/privacidade" className="underline">
               Privacidade

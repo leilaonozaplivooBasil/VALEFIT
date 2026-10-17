@@ -1,4 +1,4 @@
-# Nutri IA (VALE FIT)
+# ValeFit
 
 App de acompanhamento nutricional com IA: registro de refeições por texto, voz e foto, Coach IA,
 gamificação e painel do profissional (nutricionista/personal).

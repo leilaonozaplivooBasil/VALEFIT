@@ -4,8 +4,8 @@ import { ArrowLeft } from "lucide-react";
 export const Route = createFileRoute("/privacidade")({
   head: () => ({
     meta: [
-      { title: "Política de Privacidade — VALEFIT" },
-      { name: "description", content: "Como o VALEFIT (Nutri IA) coleta, usa e protege seus dados." },
+      { title: "Política de Privacidade — ValeFit" },
+      { name: "description", content: "Como o ValeFit coleta, usa e protege seus dados." },
     ],
   }),
   component: Privacidade,
@@ -15,7 +15,7 @@ const secoes: { titulo: string; texto: string[] }[] = [
   {
     titulo: "1. Quem somos",
     texto: [
-      "O VALEFIT (Nutri IA) é um aplicativo de acompanhamento nutricional com inteligência artificial, disponível em valefit-eight.vercel.app.",
+      "O ValeFit é um aplicativo de acompanhamento nutricional com inteligência artificial, disponível em valefit-eight.vercel.app.",
     ],
   },
   {
@@ -43,7 +43,7 @@ const secoes: { titulo: string; texto: string[] }[] = [
   {
     titulo: "5. Seus direitos (LGPD)",
     texto: [
-      "Você pode acessar, corrigir ou apagar seus dados e pedir a exclusão da sua conta a qualquer momento, pelo canal de suporte do VALEFIT.",
+      "Você pode acessar, corrigir ou apagar seus dados e pedir a exclusão da sua conta a qualquer momento, pelo canal de suporte do ValeFit.",
       "Dados de saúde são dados sensíveis e só são tratados com o seu consentimento.",
     ],
   },
