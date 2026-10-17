@@ -10,6 +10,37 @@ type Tipo = "consumidor" | "nutricionista" | "personal" | "academia";
 type OAuthPendente = { tipo: Tipo; convite?: string };
 const OAUTH_PENDENTE = "nutri-ia:oauth-pendente";
 
+// Traduz os erros mais comuns do Supabase Auth para mensagens claras.
+function mensagemDeErro(err: unknown) {
+  const code = (err as { code?: string })?.code;
+  const msg = err instanceof Error ? err.message : "";
+  if (code === "email_not_confirmed" || /email not confirmed/i.test(msg))
+    return "Confirme seu e-mail antes de entrar: abra o link que enviamos (veja também o spam).";
+  if (code === "invalid_credentials" || /invalid login credentials/i.test(msg))
+    return "E-mail ou senha incorretos.";
+  if (code === "user_already_exists" || /already registered/i.test(msg))
+    return "Este e-mail já tem conta. Use \"Já tenho conta — entrar\".";
+  if (code === "weak_password" || /password should be/i.test(msg))
+    return "Senha fraca: use pelo menos 6 caracteres.";
+  if (code === "over_email_send_rate_limit" || /rate limit/i.test(msg))
+    return "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente de novo.";
+  return msg || "Não foi possível continuar.";
+}
+
+// Confere se o login com Google está ativado no Supabase antes de redirecionar.
+async function googleAtivo() {
+  const url = import.meta.env["VITE_SUPABASE_URL"];
+  const key = import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"];
+  try {
+    const resp = await fetch(`${url}/auth/v1/settings`, { headers: { apikey: key } });
+    if (!resp.ok) return true;
+    const json = (await resp.json()) as { external?: { google?: boolean } };
+    return json.external?.google !== false;
+  } catch {
+    return true;
+  }
+}
+
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
@@ -117,7 +148,7 @@ function AuthPage() {
       }
       await aposSessao();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Não foi possível continuar.");
+      toast.error(mensagemDeErro(err));
     } finally {
       setLoading(false);
     }
@@ -126,6 +157,11 @@ function AuthPage() {
   async function onGoogle() {
     setLoading(true);
     try {
+      if (!(await googleAtivo())) {
+        toast.error("O login com Google ainda não está disponível. Use e-mail e senha.");
+        setLoading(false);
+        return;
+      }
       // O Google redireciona de volta para /auth; guardamos as escolhas da tela para concluir o cadastro.
       const pendente: OAuthPendente = { tipo: tipoEscolhido, convite: conviteAtual };
       try {
