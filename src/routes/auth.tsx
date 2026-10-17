@@ -76,7 +76,9 @@ export function destinoPorTipo(tipo: string | undefined) {
 function AuthPage() {
   const navigate = useNavigate();
   const { convite: conviteAtual, perfil: perfilInicial, modo: modoInicial } = useSearch({ from: "/auth" });
-  const [modo, setModo] = useState<"entrar" | "criar">(modoInicial ?? "criar");
+  const [modo, setModo] = useState<"entrar" | "criar" | "recuperar" | "nova-senha">(modoInicial ?? "criar");
+  const [erro, setErro] = useState<string | null>(null);
+  const [aviso, setAviso] = useState<string | null>(null);
   const [tipoEscolhido, setTipo] = useState<Tipo>(
     perfilInicial === "nutricionista" || perfilInicial === "personal" || perfilInicial === "academia"
       ? (perfilInicial as Tipo)
@@ -134,8 +136,25 @@ function AuthPage() {
       toast.error("Confirme o compartilhamento de dados com o profissional.");
       return;
     }
+    setErro(null);
+    setAviso(null);
     setLoading(true);
     try {
+      if (modo === "recuperar") {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + "/auth",
+        });
+        if (error) throw error;
+        setAviso("Enviamos um link para o seu e-mail. Abra-o para criar uma nova senha (veja também o spam).");
+        return;
+      }
+      if (modo === "nova-senha") {
+        const { error } = await supabase.auth.updateUser({ password: senha });
+        if (error) throw error;
+        toast.success("Senha alterada!");
+        await aposSessao();
+        return;
+      }
       if (modo === "criar") {
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -147,7 +166,7 @@ function AuthPage() {
         });
         if (error) throw error;
         if (!data.session) {
-          toast.success("Conta criada! Confirme o e-mail que enviamos para entrar.");
+          setAviso("Conta criada! Confirme o e-mail que enviamos para entrar.");
           setModo("entrar");
           return;
         }
@@ -157,7 +176,9 @@ function AuthPage() {
       }
       await aposSessao();
     } catch (err) {
-      toast.error(mensagemDeErro(err));
+      const msg = mensagemDeErro(err);
+      setErro(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -193,8 +214,14 @@ function AuthPage() {
   }
 
   useEffect(() => {
+    // Link de "esqueci minha senha": o Supabase abre esta tela já logado, para escolher a nova senha.
+    const recuperando = window.location.hash.includes("type=recovery");
+    if (recuperando) setModo("nova-senha");
+    const { data: sub } = supabase.auth.onAuthStateChange((evento) => {
+      if (evento === "PASSWORD_RECOVERY") setModo("nova-senha");
+    });
     void supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) return;
+      if (!data.session || recuperando) return;
       let pendente: OAuthPendente | undefined;
       try {
         const bruto = sessionStorage.getItem(OAUTH_PENDENTE);
@@ -223,6 +250,7 @@ function AuthPage() {
         }
       });
     });
+    return () => sub.subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -252,7 +280,13 @@ function AuthPage() {
         )}
 
         <h1 className="text-3xl font-extrabold tracking-tight">
-          {modo === "criar" ? "Criar sua conta" : "Entrar"}
+          {modo === "criar"
+            ? "Criar sua conta"
+            : modo === "recuperar"
+              ? "Recuperar senha"
+              : modo === "nova-senha"
+                ? "Criar nova senha"
+                : "Entrar"}
         </h1>
         <p className="mt-2 text-sm text-muted">
           Seus dados passam a ficar salvos na nuvem e sincronizados entre aparelhos.
@@ -286,6 +320,7 @@ function AuthPage() {
               className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
             />
           )}
+          {modo !== "nova-senha" && (
           <input
             type="email"
             value={email}
@@ -294,15 +329,27 @@ function AuthPage() {
             required
             className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
           />
+          )}
+          {modo !== "recuperar" && (
           <input
             type="password"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
-            placeholder="Senha"
+            placeholder={modo === "nova-senha" ? "Nova senha" : "Senha"}
             required
             minLength={6}
             className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
           />
+          )}
+
+          {erro && (
+            <p role="alert" className="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+              {erro}
+            </p>
+          )}
+          {aviso && (
+            <p className="rounded-xl border border-border bg-primary-soft px-4 py-3 text-sm font-medium">{aviso}</p>
+          )}
 
           {modo === "criar" && conviteAtual && (
             <label className="flex items-start gap-2 rounded-xl border border-border bg-card p-3 text-xs text-muted">
@@ -325,9 +372,29 @@ function AuthPage() {
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-foreground px-5 py-3 text-sm font-semibold text-background disabled:opacity-60"
           >
             {loading && <Loader2 className="size-4 animate-spin" />}
-            {modo === "criar" ? "Criar conta" : "Entrar"}
+            {modo === "criar"
+              ? "Criar conta"
+              : modo === "recuperar"
+                ? "Enviar link"
+                : modo === "nova-senha"
+                  ? "Salvar nova senha"
+                  : "Entrar"}
           </button>
         </form>
+
+        {modo === "entrar" && (
+          <button
+            type="button"
+            onClick={() => {
+              setErro(null);
+              setAviso(null);
+              setModo("recuperar");
+            }}
+            className="mt-3 text-center text-sm font-semibold text-foreground underline"
+          >
+            Esqueci minha senha
+          </button>
+        )}
 
         <button
           type="button"
@@ -340,10 +407,14 @@ function AuthPage() {
 
         <button
           type="button"
-          onClick={() => setModo(modo === "criar" ? "entrar" : "criar")}
+          onClick={() => {
+            setErro(null);
+            setAviso(null);
+            setModo(modo === "entrar" ? "criar" : "entrar");
+          }}
           className="mt-6 text-center text-sm text-muted hover:text-foreground"
         >
-          {modo === "criar" ? "Já tenho conta — entrar" : "Não tenho conta — criar agora"}
+          {modo === "entrar" ? "Não tenho conta — criar agora" : "Já tenho conta — entrar"}
         </button>
 
         <p className="mt-8 flex items-start gap-2 text-[11px] leading-relaxed text-muted">
