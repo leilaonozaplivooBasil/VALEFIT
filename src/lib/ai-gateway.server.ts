@@ -3,9 +3,9 @@ import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 // Provedor de IA compatível com a API da OpenAI, configurado por variáveis de ambiente:
 //   AI_API_KEY  (obrigatória)
 //   AI_BASE_URL (padrão: endpoint OpenAI-compatível do Google Gemini)
-//   AI_MODEL    (padrão: gemini-2.5-flash)
+//   AI_MODEL    (padrão: gemini-3.8-flash)
 export const DEFAULT_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/";
-export const DEFAULT_MODEL = "gemini-2.5-flash";
+export const DEFAULT_MODEL = "gemini-3.8-flash";
 
 export function getAiConfig() {
   const apiKey = process.env.AI_API_KEY;
