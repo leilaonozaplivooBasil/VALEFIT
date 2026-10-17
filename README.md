@@ -1,29 +1,33 @@
-# Welcome to your Lovable project
+# Nutri IA (VALE FIT)
 
-This project was built with [Lovable](https://lovable.dev).
+App de acompanhamento nutricional com IA: registro de refeições por texto, voz e foto, Coach IA,
+gamificação e painel do profissional (nutricionista/personal).
 
-## Build with Lovable
+React 19 + TypeScript + TanStack Start + Tailwind CSS v4, com Supabase (banco e login).
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+## Rodar localmente
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+npm install
+cp .env.example .env   # preencha as chaves
 npm run dev
 ```
 
-## Built with
+## Variáveis de ambiente
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+Veja `.env.example`:
+
+- `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`: projeto Supabase.
+- `SUPABASE_SERVICE_ROLE_KEY`: chave secreta, usada só no servidor para registrar comissões.
+- `AI_API_KEY`: chave de um provedor de IA compatível com a API da OpenAI. Por padrão usa o Google Gemini
+  (`AI_BASE_URL` e `AI_MODEL` permitem trocar).
+
+## Banco de dados
+
+As migrations ficam em `supabase/migrations` e já foram aplicadas no projeto Supabase `xmlnpwhkktlrulmauehu`.
+
+## Login com Google
+
+Ative o provedor Google em Supabase > Authentication > Sign In / Providers, com o Client ID e o Secret do
+Google Cloud. Em Authentication > URL Configuration, adicione a URL do site (e `http://localhost:3000` para
+desenvolvimento) nas Redirect URLs.
