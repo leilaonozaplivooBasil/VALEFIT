@@ -329,11 +329,9 @@ export const convidarPacienteManual = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ email: z.string().email() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { data: alvo } = await supabase
-      .from("perfis")
-      .select("id")
-      .eq("email", data.email.toLowerCase())
-      .maybeSingle();
+    // A busca roda no banco (usuario_por_email): o profissional não enxerga perfis de quem não é paciente.
+    const { data: alvoId } = await supabase.rpc("usuario_por_email", { _email: data.email });
+    const alvo = alvoId ? { id: alvoId } : null;
     if (!alvo) {
       return {
         ok: false as const,
@@ -689,27 +687,14 @@ export const assinarPlano = createServerFn({ method: "POST" })
       .from("perfis_consumidor")
       .upsert({ usuario_id: userId, plano: data.plano }, { onConflict: "usuario_id" });
 
+    // A comissão é calculada no banco (registrar_comissao), sem precisar da chave secreta.
     let comissao = 0;
     if (vinculo) {
-      const { data: prof } = await supabase
-        .from("perfis_profissional")
-        .select("percentual_comissao")
-        .eq("usuario_id", vinculo.profissional_id)
-        .maybeSingle();
-      const pct = Number(prof?.percentual_comissao ?? 15);
-      comissao = Math.round(valor * (pct / 100) * 100) / 100;
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      await supabaseAdmin.from("comissoes").upsert(
-        {
-          vinculo_id: vinculo.id,
-          profissional_id: vinculo.profissional_id,
-          assinatura_id: assinatura.id,
-          valor: comissao,
-          percentual: pct,
-          competencia: competenciaAtual(),
-        },
-        { onConflict: "assinatura_id,competencia" },
-      );
+      const { data: valorComissao, error: erroComissao } = await supabase.rpc("registrar_comissao", {
+        p_assinatura_id: assinatura.id,
+      });
+      if (erroComissao) console.warn("[comissao] falha ao registrar", erroComissao.message);
+      comissao = Number(valorComissao ?? 0);
     }
 
     return { ok: true, valor, comissao };

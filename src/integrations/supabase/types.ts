@@ -380,6 +380,8 @@ export type Database = {
         Returns: Database["public"]["Enums"]["tipo_perfil"]
       }
       pode_ver_paciente: { Args: { _paciente: string }; Returns: boolean }
+      registrar_comissao: { Args: { p_assinatura_id: string }; Returns: number }
+      usuario_por_email: { Args: { _email: string }; Returns: string }
       profissional_publico: {
         Args: { _slug: string }
         Returns: {
