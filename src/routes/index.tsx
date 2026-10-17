@@ -138,7 +138,9 @@ function Welcome() {
           <span className="font-mono uppercase tracking-widest">
             v1 · Precision Health
           </span>
-          <span>Feito com ❤ no Brasil</span>
+          <Link to="/privacidade" className="underline">
+            Privacidade
+          </Link>
         </footer>
       </div>
     </main>

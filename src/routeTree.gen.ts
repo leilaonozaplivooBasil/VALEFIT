@@ -21,6 +21,7 @@ import { Route as MissoesRouteImport } from './routes/missoes'
 import { Route as NutricionistaRouteImport } from './routes/nutricionista'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as RecapRouteImport } from './routes/recap'
 import { Route as RelatorioRouteImport } from './routes/relatorio'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -90,6 +91,11 @@ const OnboardingRoute = OnboardingRouteImport.update({
 const PerfilRoute = PerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RecapRoute = RecapRouteImport.update({
@@ -165,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/nutricionista': typeof NutricionistaRoute
   '/onboarding': typeof OnboardingRoute
   '/perfil': typeof PerfilRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/recap': typeof RecapRoute
   '/relatorio': typeof RelatorioRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -189,6 +196,7 @@ export interface FileRoutesByTo {
   '/nutricionista': typeof NutricionistaRoute
   '/onboarding': typeof OnboardingRoute
   '/perfil': typeof PerfilRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/recap': typeof RecapRoute
   '/relatorio': typeof RelatorioRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -215,6 +223,7 @@ export interface FileRoutesById {
   '/nutricionista': typeof NutricionistaRoute
   '/onboarding': typeof OnboardingRoute
   '/perfil': typeof PerfilRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/recap': typeof RecapRoute
   '/relatorio': typeof RelatorioRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -241,6 +250,7 @@ export interface FileRouteTypes {
     | '/nutricionista'
     | '/onboarding'
     | '/perfil'
+    | '/privacidade'
     | '/recap'
     | '/relatorio'
     | '/sitemap.xml'
@@ -265,6 +275,7 @@ export interface FileRouteTypes {
     | '/nutricionista'
     | '/onboarding'
     | '/perfil'
+    | '/privacidade'
     | '/recap'
     | '/relatorio'
     | '/sitemap.xml'
@@ -290,6 +301,7 @@ export interface FileRouteTypes {
     | '/nutricionista'
     | '/onboarding'
     | '/perfil'
+    | '/privacidade'
     | '/recap'
     | '/relatorio'
     | '/sitemap.xml'
@@ -316,6 +328,7 @@ export interface RootRouteChildren {
   NutricionistaRoute: typeof NutricionistaRoute
   OnboardingRoute: typeof OnboardingRoute
   PerfilRoute: typeof PerfilRoute
+  PrivacidadeRoute: typeof PrivacidadeRoute
   RecapRoute: typeof RecapRoute
   RelatorioRoute: typeof RelatorioRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -408,6 +421,13 @@ declare module '@tanstack/react-router' {
       path: '/perfil'
       fullPath: '/perfil'
       preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/recap': {
@@ -526,6 +546,7 @@ const rootRouteChildren: RootRouteChildren = {
   NutricionistaRoute: NutricionistaRoute,
   OnboardingRoute: OnboardingRoute,
   PerfilRoute: PerfilRoute,
+  PrivacidadeRoute: PrivacidadeRoute,
   RecapRoute: RecapRoute,
   RelatorioRoute: RelatorioRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
