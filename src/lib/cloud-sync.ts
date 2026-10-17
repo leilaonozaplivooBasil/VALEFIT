@@ -113,17 +113,42 @@ async function baixarEMesclar() {
   return mudouLocal;
 }
 
-async function aoEntrar() {
-  if (logado) return;
-  logado = true;
-  try {
-    const mudou = await baixarEMesclar();
-    agendarEnvio();
-    // As telas leem o localStorage ao abrir; recarrega uma vez para mostrar os dados da nuvem.
-    if (mudou) window.location.reload();
-  } catch (err) {
-    console.warn("[sync] falha ao baixar dados da nuvem", err);
+let puxando: Promise<boolean> | null = null;
+
+// Baixa a nuvem uma vez por login. Telas que dependem do perfil esperam por isso.
+function puxarUmaVez() {
+  if (!puxando) {
+    logado = true;
+    puxando = baixarEMesclar()
+      .then((mudou) => {
+        agendarEnvio();
+        return mudou;
+      })
+      .catch((err) => {
+        console.warn("[sync] falha ao baixar dados da nuvem", err);
+        puxando = null;
+        return false;
+      });
   }
+  return puxando;
+}
+
+// Telas que tratam o login sozinhas (elas chamam sincronizarAgora e decidem para onde ir).
+const TELAS_SEM_RECARGA = ["/", "/auth", "/onboarding"];
+
+async function aoEntrar() {
+  const mudou = await puxarUmaVez();
+  // As telas leem o localStorage ao abrir; recarrega uma vez para mostrar os dados da nuvem.
+  if (mudou && !TELAS_SEM_RECARGA.includes(window.location.pathname)) window.location.reload();
+}
+
+/** Se houver login, traz os dados da nuvem para este aparelho antes de continuar. */
+export async function sincronizarAgora() {
+  if (typeof window === "undefined") return false;
+  iniciarSincronizacao();
+  const { data } = await supabase.auth.getSession();
+  if (!data.session) return false;
+  return puxarUmaVez();
 }
 
 export function iniciarSincronizacao() {
@@ -149,6 +174,9 @@ export function iniciarSincronizacao() {
   });
   supabase.auth.onAuthStateChange((evento, session) => {
     if (session && (evento === "SIGNED_IN" || evento === "INITIAL_SESSION")) void aoEntrar();
-    if (evento === "SIGNED_OUT") logado = false;
+    if (evento === "SIGNED_OUT") {
+      logado = false;
+      puxando = null;
+    }
   });
 }

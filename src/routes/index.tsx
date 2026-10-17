@@ -1,7 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Salad, Stethoscope, ArrowRight } from "lucide-react";
 import { loadProfile } from "@/lib/profile";
+import { meuPerfil } from "@/lib/perfil.functions";
+import { destinoPorTipo } from "./auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -23,11 +25,45 @@ export const Route = createFileRoute("/")({
 
 function Welcome() {
   const navigate = useNavigate();
+  const [verificando, setVerificando] = useState(true);
 
   useEffect(() => {
-    const p = loadProfile();
-    if (p) navigate({ to: "/dashboard", replace: true });
+    if (loadProfile()) {
+      navigate({ to: "/dashboard", replace: true });
+      return;
+    }
+    // Sem perfil neste aparelho: se a pessoa já tem conta, traz os dados da nuvem.
+    void (async () => {
+      try {
+        const { sincronizarAgora } = await import("@/lib/cloud-sync");
+        const { supabase } = await import("@/integrations/supabase/client");
+        const { data } = await supabase.auth.getSession();
+        if (!data.session) return;
+        await sincronizarAgora();
+        if (loadProfile()) {
+          navigate({ to: "/dashboard", replace: true });
+          return;
+        }
+        const info = await meuPerfil();
+        const tipo = info.perfil?.tipo_perfil;
+        navigate({
+          to: (tipo && tipo !== "consumidor" ? destinoPorTipo(tipo) : "/onboarding") as string,
+          replace: true,
+        });
+      } catch (err) {
+        console.warn("[welcome] não foi possível verificar a conta", err);
+      } finally {
+        setVerificando(false);
+      }
+    })();
   }, [navigate]);
+
+  if (verificando)
+    return (
+      <div className="grid min-h-screen place-items-center bg-background">
+        <p className="text-shimmer text-sm font-semibold">Carregando…</p>
+      </div>
+    );
 
   return (
     <main className="min-h-screen bg-background">
@@ -90,6 +126,13 @@ function Welcome() {
             </Link>
           </div>
         </section>
+
+        <p className="mt-8 text-center text-sm text-muted animate-reveal [animation-delay:250ms]">
+          Já tem conta?{" "}
+          <Link to="/auth" search={{ modo: "entrar" }} className="font-semibold text-foreground underline">
+            Entrar
+          </Link>
+        </p>
 
         <footer className="mt-10 flex items-center justify-between text-xs text-muted animate-reveal [animation-delay:300ms]">
           <span className="font-mono uppercase tracking-widest">

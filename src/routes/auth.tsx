@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, useSearch, Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { loadProfile } from "@/lib/profile";
 import { Loader2, ArrowLeft, ShieldCheck } from "lucide-react";
 import { definirPerfil, meuPerfil, vincularPorSlug } from "@/lib/perfil.functions";
 import { profissionalPorSlug } from "@/lib/publico.functions";
@@ -57,7 +58,8 @@ export const Route = createFileRoute("/auth")({
     ],
   }),
   validateSearch: (search: Record<string, unknown>) => {
-    const out: { convite?: string; perfil?: string } = {};
+    const out: { convite?: string; perfil?: string; modo?: "entrar" | "criar" } = {};
+    if (search["modo"] === "entrar" || search["modo"] === "criar") out.modo = search["modo"];
     if (typeof search["convite"] === "string") out.convite = search["convite"];
     if (typeof search["perfil"] === "string") out.perfil = search["perfil"];
     return out;
@@ -73,8 +75,8 @@ export function destinoPorTipo(tipo: string | undefined) {
 
 function AuthPage() {
   const navigate = useNavigate();
-  const { convite: conviteAtual, perfil: perfilInicial } = useSearch({ from: "/auth" });
-  const [modo, setModo] = useState<"entrar" | "criar">("criar");
+  const { convite: conviteAtual, perfil: perfilInicial, modo: modoInicial } = useSearch({ from: "/auth" });
+  const [modo, setModo] = useState<"entrar" | "criar">(modoInicial ?? "criar");
   const [tipoEscolhido, setTipo] = useState<Tipo>(
     perfilInicial === "nutricionista" || perfilInicial === "personal" || perfilInicial === "academia"
       ? (perfilInicial as Tipo)
@@ -116,7 +118,14 @@ function AuthPage() {
       }
     }
 
-    await navigate({ to: destinoPorTipo(destinoTipo) as string });
+    let destino = destinoPorTipo(destinoTipo);
+    if (destino === "/dashboard") {
+      // Traz perfil e registros da nuvem; sem perfil salvo, a pessoa faz o onboarding uma vez.
+      const { sincronizarAgora } = await import("@/lib/cloud-sync");
+      await sincronizarAgora();
+      if (!loadProfile()) destino = "/onboarding";
+    }
+    await navigate({ to: destino as string });
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -202,9 +211,15 @@ function AuthPage() {
           .finally(() => setLoading(false));
         return;
       }
-      void meuPerfil().then((info) => {
+      void meuPerfil().then(async (info) => {
         if (info.perfil && (info.consumidor || info.profissional || info.academia)) {
-          void navigate({ to: destinoPorTipo(info.perfil.tipo_perfil) as string });
+          let destino = destinoPorTipo(info.perfil.tipo_perfil);
+          if (destino === "/dashboard") {
+            const { sincronizarAgora } = await import("@/lib/cloud-sync");
+            await sincronizarAgora();
+            if (!loadProfile()) destino = "/onboarding";
+          }
+          void navigate({ to: destino as string });
         }
       });
     });
