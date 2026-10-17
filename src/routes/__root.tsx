@@ -12,7 +12,6 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { iniciarSincronizacao } from "../lib/cloud-sync";
 
 function NotFoundComponent() {
   return (
@@ -108,7 +107,9 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   useEffect(() => {
-    iniciarSincronizacao();
+    // Import dinâmico: manter a sincronização fora do grafo de módulos do servidor
+    // evita uma ordem de carregamento quebrada no build de produção.
+    void import("../lib/cloud-sync").then((m) => m.iniciarSincronizacao());
   }, []);
   return (
     <QueryClientProvider client={queryClient}>
