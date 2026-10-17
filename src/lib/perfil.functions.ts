@@ -226,7 +226,12 @@ interface MealItemLike {
 }
 
 function resumoDeDados(rows: { chave: string; valor: unknown }[]) {
-  const mapa = new Map(rows.map((r) => [r.chave, r.valor]));
+  // Chaves apagadas pelo app chegam como { __removido: true }.
+  const mapa = new Map(
+    rows
+      .filter((r) => !(typeof r.valor === "object" && r.valor !== null && "__removido" in r.valor))
+      .map((r) => [r.chave, r.valor]),
+  );
   const meals = (mapa.get("nutriia:meals:v1") ?? {}) as Record<string, MealItemLike[]>;
   const water = (mapa.get("nutriia:water:v1") ?? {}) as Record<string, number>;
   const pesos = (mapa.get("nutriia:weight-log:v1") ?? []) as { date: string; kg: number }[];
