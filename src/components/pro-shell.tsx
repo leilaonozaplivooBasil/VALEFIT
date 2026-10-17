@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Users, Sparkles, MessageSquare, Wallet, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { Logo } from "@/components/brand";
 
 const NAV = [
   { to: "/profissional/painel", label: "Pacientes", icon: Users },
@@ -37,11 +38,9 @@ export function ProShell({
     <div className="min-h-screen bg-background pb-28">
       <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
-          <div className="flex items-center gap-2">
-            <div className="grid size-8 place-items-center rounded-lg bg-primary">
-              <div className="size-2.5 rounded-full bg-white" />
-            </div>
-            <span className="text-lg font-extrabold tracking-tight">Nutri IA Pro</span>
+          <div className="flex items-center gap-2 text-primary">
+            <Logo size="sm" />
+            <span className="rounded-full bg-brand-deep px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-white">Pro</span>
           </div>
           <button
             onClick={sair}
@@ -64,7 +63,7 @@ export function ProShell({
       </main>
 
       <nav className="fixed bottom-4 left-1/2 z-50 w-[min(30rem,calc(100%-1.5rem))] -translate-x-1/2">
-        <div className="flex items-center justify-around rounded-2xl border border-border bg-card/90 px-2 py-2 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)] backdrop-blur-xl">
+        <div className="flex items-center justify-around rounded-full border border-border bg-card/95 px-2 py-2 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)] backdrop-blur-xl">
           {NAV.map((item) => {
             const Icon = item.icon;
             const active = pathname.startsWith(item.to);
@@ -73,7 +72,7 @@ export function ProShell({
                 key={item.to}
                 to={item.to}
                 className={`flex flex-col items-center gap-0.5 rounded-xl px-3 py-2 text-[10px] font-semibold uppercase tracking-wider transition ${
-                  active ? "text-foreground" : "text-muted hover:text-foreground"
+                  active ? "text-primary" : "text-muted hover:text-foreground"
                 }`}
               >
                 <Icon className="size-4" strokeWidth={active ? 2.5 : 2} />

@@ -13,7 +13,7 @@ interface Body {
   when?: string;
 }
 
-const SYSTEM = `Você é a Nutri IA, uma nutricionista brasileira especialista em avaliar refeições comuns do dia a dia (café da manhã, almoço, jantar, lanches, rodízios, delivery).
+const SYSTEM = `Você é a nutricionista do ValeFit, especialista em avaliar refeições comuns do dia a dia (café da manhã, almoço, jantar, lanches, rodízios, delivery).
 
 Sua tarefa: receber uma descrição em português informal do que a pessoa comeu e retornar uma estimativa nutricional razoável.
 

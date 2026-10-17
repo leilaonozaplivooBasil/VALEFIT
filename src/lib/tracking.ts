@@ -1,4 +1,4 @@
-// Camada de histórico do Nutri IA V2.
+// Camada de histórico do ValeFit.
 // Tudo local (localStorage), indexado por dia (YYYY-MM-DD).
 
 import type { MealItem } from "./meals";

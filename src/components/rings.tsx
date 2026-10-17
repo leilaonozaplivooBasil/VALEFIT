@@ -47,12 +47,12 @@ export function ProgressRing({
 export function MacroBar({ label, value, target, color }: { label: string; value: number; target: number; color: string }) {
   const pct = Math.max(0, Math.min(1, target > 0 ? value / target : 0));
   return (
-    <div className="text-center space-y-1.5">
-      <p className="font-mono text-[10px] uppercase tracking-widest text-muted">{label}</p>
-      <p className="text-sm font-bold" style={{ color }}>
-        {Math.round(value)}g <span className="text-[10px] font-normal text-muted">/ {target}g</span>
+    <div className="space-y-1.5 text-center sm:px-3 sm:text-left">
+      <p className="truncate text-xs font-bold text-foreground/80 sm:text-sm">{label}</p>
+      <p className="text-base font-black tabular-nums" style={{ color }}>
+        {Math.round(value)}g <span className="text-xs font-semibold text-muted">/ {target}g</span>
       </p>
-      <div className="h-1 overflow-hidden rounded-full" style={{ background: `color-mix(in oklab, ${color} 10%, transparent)` }}>
+      <div className="h-2 overflow-hidden rounded-full" style={{ background: `color-mix(in oklab, ${color} 14%, transparent)` }}>
         <div
           className="h-full rounded-full transition-all duration-700"
           style={{ width: `${pct * 100}%`, background: color }}

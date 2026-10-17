@@ -4,9 +4,9 @@ import { Stethoscope, ArrowLeft } from "lucide-react";
 export const Route = createFileRoute("/nutricionista")({
   head: () => ({
     meta: [
-      { title: "Nutri IA para Nutricionistas — em breve" },
+      { title: "ValeFit para Nutricionistas — em breve" },
       { name: "description", content: "Painel profissional para nutricionistas: gestão de pacientes, dietas e IA personalizada com sua filosofia." },
-      { property: "og:title", content: "Nutri IA para Nutricionistas" },
+      { property: "og:title", content: "ValeFit para Nutricionistas" },
       { property: "og:description", content: "Painel profissional em breve." },
       { property: "og:type", content: "website" },
     ],
@@ -27,7 +27,7 @@ function NutriPro() {
             <Stethoscope className="size-6" />
           </div>
           <p className="mt-8 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
-            Nutri IA Pro
+            ValeFit Pro
           </p>
           <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">
             Sua ferramenta profissional está a caminho.

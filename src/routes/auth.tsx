@@ -6,6 +6,7 @@ import { loadProfile } from "@/lib/profile";
 import { Loader2, ArrowLeft, ShieldCheck } from "lucide-react";
 import { definirPerfil, meuPerfil, vincularPorSlug } from "@/lib/perfil.functions";
 import { profissionalPorSlug } from "@/lib/publico.functions";
+import { Cuca, Logo } from "@/components/brand";
 
 type Tipo = "consumidor" | "nutricionista" | "personal" | "academia";
 type OAuthPendente = { tipo: Tipo; convite?: string };
@@ -45,14 +46,14 @@ async function googleAtivo() {
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Entrar na Nutri IA — sua conta na nuvem" },
+      { title: "Entrar no ValeFit — sua conta na nuvem" },
       {
         name: "description",
         content:
-          "Crie sua conta Nutri IA como pessoa, nutricionista, personal trainer ou academia e acesse seus dados em qualquer aparelho.",
+          "Crie sua conta ValeFit como pessoa, nutricionista, personal trainer ou academia e acesse seus dados em qualquer aparelho.",
       },
-      { property: "og:title", content: "Entrar na Nutri IA" },
-      { property: "og:description", content: "Acesse o Nutri IA como consumidor, profissional ou academia." },
+      { property: "og:title", content: "Entrar no ValeFit" },
+      { property: "og:description", content: "Acesse o ValeFit como consumidor, profissional ou academia." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -268,6 +269,14 @@ function AuthPage() {
           <ArrowLeft className="size-4" /> Voltar
         </Link>
 
+        <div className="mb-6 flex items-end gap-3">
+          <Cuca pose="rosto" decorative className="w-20 shrink-0" />
+          <div className="mb-2">
+            <Logo size="sm" className="text-primary" />
+            <p className="mt-1 text-sm font-semibold text-muted">Que bom te ver por aqui!</p>
+          </div>
+        </div>
+
         {convidadoPor && (
           <div className="mb-6 rounded-2xl border border-border bg-primary-soft p-4">
             <p className="font-mono text-[10px] uppercase tracking-widest text-primary">Convite</p>
@@ -279,7 +288,7 @@ function AuthPage() {
           </div>
         )}
 
-        <h1 className="text-3xl font-extrabold tracking-tight">
+        <h1 className="text-3xl font-black tracking-tight">
           {modo === "criar"
             ? "Criar sua conta"
             : modo === "recuperar"
@@ -369,7 +378,7 @@ function AuthPage() {
           <button
             type="submit"
             disabled={loading}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-foreground px-5 py-3 text-sm font-semibold text-background disabled:opacity-60"
+            className="btn-3d flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3.5 text-sm font-extrabold uppercase tracking-wide text-white disabled:opacity-60"
           >
             {loading && <Loader2 className="size-4 animate-spin" />}
             {modo === "criar"

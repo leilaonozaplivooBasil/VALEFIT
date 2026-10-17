@@ -7,9 +7,9 @@ import { loadProfile } from "@/lib/profile";
 export const Route = createFileRoute("/evolucao")({
   head: () => ({
     meta: [
-      { title: "Evolução — Nutri IA" },
-      { name: "description", content: "Acompanhe sua evolução de peso, consistência e sequência de dias registrados no Nutri IA." },
-      { property: "og:title", content: "Evolução — Nutri IA" },
+      { title: "Evolução — ValeFit" },
+      { name: "description", content: "Acompanhe sua evolução de peso, consistência e sequência de dias registrados no ValeFit." },
+      { property: "og:title", content: "Evolução — ValeFit" },
       { property: "og:description", content: "Sua jornada visualizada." },
       { property: "og:type", content: "website" },
     ],

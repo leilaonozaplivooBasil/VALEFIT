@@ -12,9 +12,9 @@ import { weeklyStats, detectPatterns, projectResult, type Pattern, type Projecti
 export const Route = createFileRoute("/relatorio")({
   head: () => ({
     meta: [
-      { title: "Relatório semanal com IA — Nutri IA" },
+      { title: "Relatório semanal com IA — ValeFit" },
       { name: "description", content: "Sua semana analisada pela IA: padrões alimentares, evolução do Índice de Consistência e previsão de quando você atinge sua meta." },
-      { property: "og:title", content: "Relatório semanal — Nutri IA" },
+      { property: "og:title", content: "Relatório semanal — ValeFit" },
       { property: "og:description", content: "Padrões, evolução e previsão de resultado gerados por IA." },
       { property: "og:type", content: "article" },
     ],
@@ -163,7 +163,7 @@ function RelatorioPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles className="size-4 text-primary" />
-              <p className="text-sm font-bold">Análise da Nutri IA</p>
+              <p className="text-sm font-bold">Análise do Cuca</p>
             </div>
             <button
               onClick={() => void generate()}

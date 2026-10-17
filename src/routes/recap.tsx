@@ -9,9 +9,9 @@ import { weeklyStats, detectPatterns, projectResult } from "@/lib/insights";
 export const Route = createFileRoute("/recap")({
   head: () => ({
     meta: [
-      { title: "Seu recap da semana — Nutri IA" },
+      { title: "Seu recap da semana — ValeFit" },
       { name: "description", content: "Um resumo animado de 30 segundos com os números da sua semana: consistência, proteína, treinos e evolução de peso." },
-      { property: "og:title", content: "Recap semanal — Nutri IA" },
+      { property: "og:title", content: "Recap semanal — ValeFit" },
       { property: "og:description", content: "Sua semana em movimento, gerada automaticamente." },
       { property: "og:type", content: "website" },
     ],
@@ -110,7 +110,7 @@ function RecapPage() {
       </div>
 
       <div className="flex items-center justify-between px-5 py-3">
-        <span className="font-mono text-[10px] uppercase tracking-widest opacity-60">Recap semanal · Nutri IA</span>
+        <span className="font-mono text-[10px] uppercase tracking-widest opacity-60">Recap semanal · ValeFit</span>
         <Link to="/dashboard" className="grid size-8 place-items-center rounded-lg bg-white/10" aria-label="Fechar">
           <X className="size-4" />
         </Link>

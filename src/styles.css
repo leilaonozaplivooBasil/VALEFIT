@@ -35,6 +35,11 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-deep-2: var(--brand-deep-2);
+  --color-brand-lime: var(--brand-lime);
+  --color-brand-leaf: var(--brand-leaf);
+  --color-brand-sun: var(--brand-sun);
   --color-carb: var(--carb);
   --color-carb-soft: var(--carb-soft);
   --color-fat: var(--fat);
@@ -44,40 +49,47 @@
 }
 
 :root {
-  --radius: 1rem;
-  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --radius: 1.125rem;
+  --font-display: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  --font-wordmark: "Montserrat", "Nunito", ui-sans-serif, sans-serif;
   --font-mono-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  --background: hsl(0 0% 98%);
-  --foreground: hsl(0 0% 8%);
-  --card: hsl(0 0% 100%);
-  --card-foreground: hsl(0 0% 8%);
-  --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(0 0% 8%);
+  /* ValeFit: verde-floresta, creme e toques de lima e sol */
+  --background: #f0f1ea;
+  --foreground: #0d2b22;
+  --card: #fbfcf8;
+  --card-foreground: #0d2b22;
+  --popover: #fbfcf8;
+  --popover-foreground: #0d2b22;
 
-  --primary: hsl(155 100% 28%);
-  --primary-foreground: hsl(0 0% 100%);
-  --primary-soft: hsl(155 100% 28% / 0.08);
+  --primary: #0c5f3a;
+  --primary-foreground: #ffffff;
+  --primary-soft: #e3efe2;
+  --brand-deep: #023326;
+  --brand-deep-2: #0a4733;
+  --brand-lime: #c8ddaa;
+  --brand-leaf: #5aa36f;
+  --brand-sun: #fee094;
 
-  --secondary: hsl(0 0% 96%);
-  --secondary-foreground: hsl(0 0% 12%);
-  --muted: hsl(0 0% 45%);
-  --muted-foreground: hsl(0 0% 45%);
-  --accent: hsl(155 100% 28% / 0.08);
-  --accent-foreground: hsl(155 100% 22%);
+  --secondary: #e8ece3;
+  --secondary-foreground: #0d2b22;
+  --muted: #5f746c;
+  --muted-foreground: #5f746c;
+  --accent: #e3efe2;
+  --accent-foreground: #0c5f3a;
   --destructive: hsl(0 72% 51%);
   --destructive-foreground: hsl(0 0% 100%);
 
-  --border: hsl(0 0% 0% / 0.06);
-  --input: hsl(0 0% 0% / 0.08);
-  --ring: hsl(155 100% 28% / 0.4);
+  --border: #e1e6dc;
+  --input: #d7ded2;
+  --ring: rgb(12 95 58 / 0.35);
 
-  --carb: hsl(212 96% 55%);
-  --carb-soft: hsl(212 96% 55% / 0.1);
-  --fat: hsl(28 96% 55%);
-  --fat-soft: hsl(28 96% 55% / 0.1);
-  --water: hsl(200 96% 50%);
-  --water-soft: hsl(200 96% 50% / 0.1);
+  --carb: #e0a526;
+  --carb-soft: rgb(224 165 38 / 0.14);
+  --fat: #e0742c;
+  --fat-soft: rgb(224 116 44 / 0.12);
+  --water: #2a9bd6;
+  --water-soft: rgb(42 155 214 / 0.12);
 }
 
 .dark {
@@ -117,6 +129,41 @@
   100% { background-position: 200% 0; }
 }
 
+@keyframes cuca-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(-1deg); }
+}
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(0.85); }
+  70% { transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@utility animate-cuca {
+  animation: cuca-float 4.5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+@utility animate-pop {
+  animation: pop-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* Botão "3D" estilo Duolingo: sombra sólida embaixo que afunda ao tocar. */
+@utility btn-3d {
+  box-shadow: 0 4px 0 0 var(--brand-deep);
+  transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+  &:hover { filter: brightness(1.06); }
+  &:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 0 var(--brand-deep); }
+}
+@utility btn-3d-soft {
+  box-shadow: 0 3px 0 0 var(--border);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  &:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 0 var(--border); }
+}
+@utility card-soft {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 0 0 rgb(13 43 34 / 0.03), 0 12px 32px -20px rgb(2 51 38 / 0.25);
+}
+
 @utility animate-reveal {
   animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -139,6 +186,9 @@
   * {
     border-color: var(--color-border);
   }
+  h1, h2, h3 {
+    letter-spacing: -0.01em;
+  }
   html, body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -150,4 +200,8 @@
     background-color: color-mix(in oklab, var(--primary) 15%, transparent);
     color: var(--primary);
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-cuca, .animate-pop, .animate-reveal { animation: none; }
 }

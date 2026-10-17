@@ -1,4 +1,4 @@
-// Índice de Consistência — indicador proprietário do Nutri IA (0–100).
+// Índice de Consistência — indicador proprietário do ValeFit (0–100).
 // Combina alimentação, proteína, hidratação, treino, registro diário e sono.
 
 import type { Targets, Profile } from "./profile";

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Flame, Trophy, Zap, Check, Swords } from "lucide-react";
 import { AppShell, TopBar } from "@/components/app-shell";
+import { Cuca } from "@/components/brand";
 import { loadProfile, calcTargets, type Profile, type Targets } from "@/lib/profile";
 import {
   dailyMissions, missionPointsToday, syncXp, levelFromXp, achievements,
@@ -12,9 +13,9 @@ import {
 export const Route = createFileRoute("/missoes")({
   head: () => ({
     meta: [
-      { title: "Missões e conquistas — Nutri IA" },
+      { title: "Missões e conquistas — ValeFit" },
       { name: "description", content: "Missões diárias, XP, conquistas desbloqueadas e o Modo Desafio de 7 a 30 dias para manter sua consistência nutricional." },
-      { property: "og:title", content: "Missões e conquistas — Nutri IA" },
+      { property: "og:title", content: "Missões e conquistas — ValeFit" },
       { property: "og:description", content: "Gamificação inteligente para transformar registro nutricional em hábito." },
       { property: "og:type", content: "website" },
     ],
@@ -71,20 +72,26 @@ function MissoesPage() {
 
       <main className="mx-auto max-w-xl space-y-6 px-6 py-6">
         {/* nível */}
-        <section className="rounded-[32px] border border-border bg-card p-6 animate-reveal">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-muted">Nível</p>
-              <p className="text-3xl font-extrabold tracking-tight">{level.level}</p>
+        <section className="relative overflow-hidden rounded-[28px] bg-brand-deep p-6 text-white animate-reveal">
+          <div className="pointer-events-none absolute -right-12 -top-12 size-44 rounded-full bg-white/5" />
+          <div className="relative flex items-end justify-between gap-3">
+            <div className="pb-2">
+              <p className="flex items-center gap-1.5 text-sm font-bold text-brand-lime">
+                <Zap className="size-4" fill="currentColor" /> Nível
+              </p>
+              <p className="text-5xl font-black tracking-tight">{level.level}</p>
+              <p className="mt-1 text-sm text-white/80">
+                {pts.earned === pts.total && pts.total > 0 ? "Missões do dia completas! 🎉" : "Bora completar as missões de hoje?"}
+              </p>
             </div>
-            <div className="grid size-14 place-items-center rounded-2xl bg-primary-soft text-primary">
-              <Zap className="size-6" />
+            <Cuca pose="piscando" className="-mb-6 -mr-2 w-28 shrink-0" />
+          </div>
+          <div className="relative mt-4 h-3.5 overflow-hidden rounded-full bg-white/15">
+            <div className="relative h-full rounded-full bg-brand-leaf transition-all duration-700" style={{ width: `${level.pct * 100}%` }}>
+              <span className="absolute inset-x-2 top-[3px] h-1 rounded-full bg-white/35" />
             </div>
           </div>
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-secondary">
-            <div className="h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${level.pct * 100}%` }} />
-          </div>
-          <p className="mt-2 text-xs text-muted tabular-nums">
+          <p className="relative mt-2 text-xs text-white/75 tabular-nums">
             {level.into} / {level.next} XP para o nível {level.level + 1} · {xp} XP no total
           </p>
         </section>
@@ -101,10 +108,10 @@ function MissoesPage() {
             {missions.map((m) => (
               <div
                 key={m.id}
-                className={`rounded-2xl border p-4 transition ${m.done ? "border-primary/30 bg-primary-soft" : "border-border bg-card"}`}
+                className={`rounded-2xl border-2 p-4 transition ${m.done ? "border-primary/30 bg-primary-soft" : "border-border bg-card"}`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`grid size-8 shrink-0 place-items-center rounded-xl ${m.done ? "bg-primary text-primary-foreground" : "bg-secondary text-muted"}`}>
+                  <div className={`grid size-9 shrink-0 place-items-center rounded-full ${m.done ? "bg-primary text-primary-foreground" : "bg-carb-soft text-carb"}`}>
                     {m.done ? <Check className="size-4" strokeWidth={3} /> : <Flame className="size-3.5" />}
                   </div>
                   <div className="flex-1">
@@ -116,8 +123,8 @@ function MissoesPage() {
                   </div>
                 </div>
                 {!m.done && (
-                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-secondary">
-                    <div className="h-full rounded-full bg-primary/70" style={{ width: `${Math.round(m.progress * 100)}%` }} />
+                  <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-secondary">
+                    <div className="h-full rounded-full bg-brand-leaf" style={{ width: `${Math.round(m.progress * 100)}%` }} />
                   </div>
                 )}
               </div>

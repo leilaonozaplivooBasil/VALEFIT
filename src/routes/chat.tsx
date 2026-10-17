@@ -1,16 +1,17 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Send, Sparkles, ArrowLeft } from "lucide-react";
+import { Send, ArrowLeft } from "lucide-react";
 import { AppShell, TopBar } from "@/components/app-shell";
+import { Cuca, CucaAvatar } from "@/components/brand";
 import { loadProfile, calcTargets } from "@/lib/profile";
 import { loadMealsToday, totalsToday, getWaterToday } from "@/lib/meals";
 
 export const Route = createFileRoute("/chat")({
   head: () => ({
     meta: [
-      { title: "Coach IA — Nutri IA" },
+      { title: "Coach IA — ValeFit" },
       { name: "description", content: "Converse com sua nutricionista de IA. Ela conhece seu perfil, meta e refeições do dia." },
-      { property: "og:title", content: "Coach IA — Nutri IA" },
+      { property: "og:title", content: "Coach IA — ValeFit" },
       { property: "og:description", content: "Sua nutricionista com IA, 24 horas." },
       { property: "og:type", content: "website" },
     ],
@@ -117,6 +118,7 @@ function Chat() {
   return (
     <AppShell>
       <TopBar
+        title="Coach IA"
         right={
           <button
             onClick={() => navigate({ to: "/dashboard" })}
@@ -131,20 +133,18 @@ function Chat() {
         <div ref={scrollRef} className="flex-1 overflow-y-auto py-6 space-y-6">
           {messages.length === 0 ? (
             <div className="animate-reveal py-8 text-center">
-              <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-primary text-primary-foreground">
-                <Sparkles className="size-6" />
-              </div>
-              <h2 className="mt-4 text-2xl font-extrabold tracking-tight">Coach IA</h2>
+              <Cuca pose="joia" className="animate-cuca mx-auto w-48" />
+              <h2 className="mt-2 text-2xl font-black tracking-tight">Fala com o Cuca!</h2>
               <p className="mx-auto mt-2 max-w-xs text-sm text-muted">
-                Sua nutricionista com IA. Ela conhece seu perfil, meta e o que você
-                comeu hoje.
+                Seu coach de nutrição com IA. Ele conhece seu perfil, sua meta e o que
+                você comeu hoje.
               </p>
               <div className="mt-8 grid gap-2">
                 {SUGGESTIONS.map((s) => (
                   <button
                     key={s}
                     onClick={() => send(s)}
-                    className="rounded-xl border border-border bg-card px-4 py-3 text-left text-sm transition hover:border-foreground/30"
+                    className="card-soft btn-3d-soft rounded-2xl px-4 py-3 text-left text-sm font-semibold transition hover:border-primary/40"
                   >
                     "{s}"
                   </button>
@@ -155,19 +155,17 @@ function Chat() {
             messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"} animate-fade`}>
                 {m.role === "assistant" && (
-                  <div className="mr-2 grid size-8 shrink-0 place-items-center self-end rounded-xl bg-primary text-primary-foreground">
-                    <Sparkles className="size-4" />
-                  </div>
+                  <CucaAvatar className="mr-2 size-9 self-end" />
                 )}
                 <div
                   className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                     m.role === "user"
-                      ? "bg-foreground text-background"
-                      : "text-foreground"
+                      ? "rounded-br-md bg-primary text-white"
+                      : "card-soft rounded-bl-md text-foreground"
                   }`}
                 >
                   {m.content || (streaming && i === messages.length - 1 ? (
-                    <span className="text-shimmer font-semibold">Pensando…</span>
+                    <span className="text-shimmer font-semibold">O Cuca está pensando…</span>
                   ) : "")}
                 </div>
               </div>
@@ -176,11 +174,11 @@ function Chat() {
         </div>
 
         <div className="sticky bottom-24 pb-4 pt-2 bg-gradient-to-t from-background via-background to-transparent">
-          <div className="flex items-end gap-2 rounded-2xl border border-border bg-card p-2">
+          <div className="card-soft flex items-end gap-2 rounded-2xl p-2">
             <textarea
               ref={inputRef}
               rows={1}
-              placeholder="Pergunte à sua Nutri IA…"
+              placeholder="Pergunte ao Cuca…"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
@@ -195,7 +193,7 @@ function Chat() {
             <button
               onClick={() => send(input)}
               disabled={streaming || !input.trim()}
-              className="grid size-10 shrink-0 place-items-center rounded-xl bg-foreground text-background transition disabled:opacity-40"
+              className="btn-3d grid size-10 shrink-0 place-items-center rounded-xl bg-primary text-white transition disabled:opacity-40"
             >
               <Send className="size-4" />
             </button>

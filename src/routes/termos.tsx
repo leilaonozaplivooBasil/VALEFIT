@@ -4,8 +4,8 @@ import { ArrowLeft } from "lucide-react";
 export const Route = createFileRoute("/termos")({
   head: () => ({
     meta: [
-      { title: "Termos de Uso — VALEFIT" },
-      { name: "description", content: "Regras de uso do VALEFIT (Nutri IA)." },
+      { title: "Termos de Uso — ValeFit" },
+      { name: "description", content: "Regras de uso do ValeFit." },
     ],
   }),
   component: Termos,
@@ -15,7 +15,7 @@ const secoes: { titulo: string; texto: string[] }[] = [
   {
     titulo: "1. Aceitação",
     texto: [
-      "Ao criar uma conta ou usar o VALEFIT (Nutri IA), você concorda com estes Termos de Uso e com a nossa Política de Privacidade (valefit-eight.vercel.app/privacidade).",
+      "Ao criar uma conta ou usar o ValeFit, você concorda com estes Termos de Uso e com a nossa Política de Privacidade (valefit-eight.vercel.app/privacidade).",
     ],
   },
   {
